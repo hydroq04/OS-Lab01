@@ -8,7 +8,6 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
   else {
-    // pipe, fork, write, read, and getpid
     int p_in[2], p_out[2];
     pipe(p_in);
     pipe(p_out);

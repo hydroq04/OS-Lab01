@@ -9,15 +9,14 @@ void clear(char** x_argv, int start) {
     }
 }
 
-int
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     if (argc > MAXARG) {
         printf("Too many arguments!\n");
         exit(1);
     }
     else if (argc < 2) {
-        printf("Usage: xargs [cmd]\n");
+        printf("Usage: xargs <cmd> [args]\n");
         exit(1);
     }
     else {
@@ -35,29 +34,34 @@ main(int argc, char* argv[])
         int start = 0;
         int pos = 0;
 
-        while(read(0, &reader, 1)) {
+        while (read(0, &reader, 1)) {
             // Clear excess space
             if (reader == ' ' || reader == '\t') {
                 buffer[pos] = 0;
                 x_argv[x_argc] = &buffer[start];
                 ++x_argc;
+
                 ++pos;
                 start = pos;
             }
+
             else if (reader == '\n') {
-                int pid = fork();
                 buffer[pos] = 0;
                 x_argv[x_argc] = &buffer[start];
                 ++x_argc;
+
+		int pid = fork();
                 if (pid == 0) {
                     exec(x_argv[0], x_argv);
                 }
                 wait((int*) 0);
                 --x_argc;
                 clear(x_argv, x_argc);
+
                 pos = 0;
                 start = pos;
             }
+
             else {
                 buffer[pos] = reader;
                 ++pos;
